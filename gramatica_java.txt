@@ -1,0 +1,21 @@
+# Gramática didática do subconjunto Java usado na Operação Sentinela - Resilient Community Infrastructure.
+# É um registro formal; o programa Python não precisa interpretar este arquivo.
+
+programa -> "public" "class" ID "{" metodo_main "}"
+metodo_main -> "public" "static" "void" "main" "(" "String" "[" "]" ID ")" bloco
+# TODO M2: completar a produção de bloco
+# TODO M2: completar a produção de lista_stmt
+# TODO M2: completar a produção de stmt
+declaracao -> "int" ID inicializacao
+inicializacao -> "=" expr | epsilon
+atribuicao -> ID "=" expr
+if_stmt -> "if" "(" condicao ")" stmt
+# TODO M2: completar a produção de while_stmt
+for_stmt -> "for" "(" atribuicao ";" condicao ";" atribuicao ")" stmt
+condicao -> expr OP_REL expr
+OP_REL -> "<" | ">" | "<=" | ">=" | "==" | "!="
+expr -> termo expr_linha
+expr_linha -> "+" termo expr_linha | "-" termo expr_linha | epsilon
+termo -> fator termo_linha
+termo_linha -> "*" fator termo_linha | "/" fator termo_linha | epsilon
+fator -> NUM | ID | "(" expr ")"

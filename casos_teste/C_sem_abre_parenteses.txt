@@ -1,0 +1,24 @@
+public class SentinelaComunitaria {
+    public static void main(String[] args) {
+        int energia = 1;
+        int agua = 1;
+        int acesso = 0;
+        int temperatura = 34;
+        int risco = 0;
+        int ciclo = 0;
+        int verificacoes = 0;
+        if (energia<1)
+            risco = risco + 1;
+        if (agua<1)
+            risco = risco + 1;
+        if (acesso>0)
+            risco = risco + 1;
+        for (ciclo=0; ciclo<3; ciclo=ciclo+1) {
+            if temperatura>30)
+                risco = risco + 2 * 3;
+        }
+        while (verificacoes<2) {
+            verificacoes = verificacoes + 1;
+        }
+    }
+}
