@@ -1,4 +1,4 @@
 RESULTADO: CADEIA NAO RECONHECIDA
 
 ERRO SINTATICO
-Esperado ;, mas foi encontrado '}' (linha 22).
+Esperado (, mas foi encontrado 'temperatura' (linha 17).
