@@ -13,7 +13,14 @@ class NoArvore:
     def adicionar(self,no):self.filhos.append(no)
     def obter_terminais(self):
         # MISSÃO 4 - TODO: Percorra os filhos na ordem; descarte epsilon; devolva os lexemas das folhas terminais.
-        raise NotImplementedError("Implemente o método obter_terminais da Missão 4")
+        if self.terminal:
+            if self.simbolo == 'epsilon':
+                return []
+            return [self.simbolo]
+        terminais = []
+        for filho in self.filhos:
+            terminais.extend(filho.obter_terminais())
+        return terminais
 
     def linhas(self,prefixo='',ultimo=True):
         saida=[prefixo+('`-- ' if ultimo else '|-- ')+self.simbolo]
@@ -66,15 +73,47 @@ class AnalisadorSintatico:
         n.adicionar(self.bloco());return n
     def bloco(self):
         # MISSÃO 4 - TODO: Implemente bloco -> "{" lista_stmt "}"; gere os respectivos nós.
-        raise NotImplementedError("Implemente o método bloco da Missão 4")
+        n = NoArvore('bloco')
+        n.adicionar(self.consumir('{'))
+        n.adicionar(self.lista_stmt())
+        n.adicionar(self.consumir('}'))
+        return n
 
     def lista_stmt(self):
         # MISSÃO 4 - TODO: Implemente lista_stmt -> stmt lista_stmt | epsilon; encerre quando encontrar "}".
-        raise NotImplementedError("Implemente o método lista_stmt da Missão 4")
+        n = NoArvore('lista_stmt')
+        t = self.atual()
+        if t is None or t.lexema == '}':
+            n.adicionar(self.epsilon())
+        else:
+            n.adicionar(self.stmt())
+            n.adicionar(self.lista_stmt())
+        return n
 
     def stmt(self):
         # MISSÃO 4 - TODO: Escolha a produção compatível com o token atual (INT, ID, IF, WHILE, FOR ou "{").
-        raise NotImplementedError("Implemente o método stmt da Missão 4")
+        n = NoArvore('stmt')
+        t = self.atual()
+        if t is None:
+            raise SyntaxError('Instrução incompleta: o código terminou.')
+        if t.tipo == 'INT':
+            n.adicionar(self.declaracao())
+            n.adicionar(self.consumir(';'))
+        elif t.tipo == 'ID':
+            n.adicionar(self.atribuicao())
+            n.adicionar(self.consumir(';'))
+        elif t.tipo == 'IF':
+            n.adicionar(self.if_stmt())
+        elif t.tipo == 'WHILE':
+            n.adicionar(self.while_stmt())
+        elif t.tipo == 'FOR':
+            n.adicionar(self.for_stmt())
+        elif t.lexema == '{':
+            n.adicionar(self.bloco())
+        else:
+            # Nenhuma produção de stmt começa com este token: rejeição.
+            raise SyntaxError(f"Instrução inválida: '{t.lexema}' (linha {t.linha}).")
+        return n
 
     def declaracao(self):
         n=NoArvore('declaracao');n.adicionar(self.consumir('INT'));n.adicionar(self.consumir('ID'));n.adicionar(self.inicializacao());return n
@@ -90,7 +129,13 @@ class AnalisadorSintatico:
         n=NoArvore('if_stmt');n.adicionar(self.consumir('IF'));n.adicionar(self.consumir('('));n.adicionar(self.condicao());n.adicionar(self.consumir(')'));n.adicionar(self.stmt());return n
     def while_stmt(self):
         # MISSÃO 4 - TODO: Implemente while_stmt -> "while" "(" condicao ")" stmt.
-        raise NotImplementedError("Implemente o método while_stmt da Missão 4")
+        n = NoArvore('while_stmt')
+        n.adicionar(self.consumir('WHILE'))
+        n.adicionar(self.consumir('('))
+        n.adicionar(self.condicao())
+        n.adicionar(self.consumir(')'))
+        n.adicionar(self.stmt())
+        return n
 
     def for_stmt(self):
         n=NoArvore('for_stmt');n.adicionar(self.consumir('FOR'));n.adicionar(self.consumir('('));n.adicionar(self.atribuicao());n.adicionar(self.consumir(';'));n.adicionar(self.condicao());n.adicionar(self.consumir(';'));n.adicionar(self.atribuicao());n.adicionar(self.consumir(')'));n.adicionar(self.stmt());return n
