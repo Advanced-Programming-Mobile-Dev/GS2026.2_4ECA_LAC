@@ -3,14 +3,14 @@
 
 programa -> "public" "class" ID "{" metodo_main "}"
 metodo_main -> "public" "static" "void" "main" "(" "String" "[" "]" ID ")" bloco
-# TODO M2: completar a produção de bloco
-# TODO M2: completar a produção de lista_stmt
-# TODO M2: completar a produção de stmt
+bloco -> "{" lista_stmt "}"
+lista_stmt -> stmt lista_stmt | epsilon
+stmt -> declaracao ";" | atribuicao ";" | if_stmt | while_stmt | for_stmt | bloco
 declaracao -> "int" ID inicializacao
 inicializacao -> "=" expr | epsilon
 atribuicao -> ID "=" expr
 if_stmt -> "if" "(" condicao ")" stmt
-# TODO M2: completar a produção de while_stmt
+while_stmt -> "while" "(" condicao ")" stmt
 for_stmt -> "for" "(" atribuicao ";" condicao ";" atribuicao ")" stmt
 condicao -> expr OP_REL expr
 OP_REL -> "<" | ">" | "<=" | ">=" | "==" | "!="
